@@ -1,8 +1,20 @@
-# World Monitor
+# Freight Monitor
 
 [简体中文](README.zh-CN.md) | [日本語](README.ja-JP.md)
 
-**Real-time global intelligence dashboard** — AI-powered news aggregation, geopolitical monitoring, and infrastructure tracking in a unified situational awareness interface.
+**Australia and Pacific freight-risk situation monitoring.** This experimental MVP maps freight infrastructure, disruptions and operational exposure for freight operators and insurance conversations.
+
+> Prototype status: the current freight events, company profile and exposure scores are deterministic simulated data. Every synthetic record is marked `SIMULATED` in the data model and UI.
+
+## Freight MVP scope
+
+- Australia/Pacific map centred on Oceania
+- freight corridors, ports, shipping, weather, fire and natural-hazard context
+- simulated road, port and maritime exposure events anchored to real freight locations
+- explainable network-risk summary and demo freight-company risk profile
+- no database, accounts, payments, AI or paid data services
+
+This repository is an AGPL-3.0 fork of [World Monitor](https://github.com/koala73/worldmonitor). The fork is intentionally being used to validate the product before any clean-room rebuild.
 
 [![GitHub stars](https://img.shields.io/github/stars/koala73/worldmonitor?style=social)](https://github.com/koala73/worldmonitor/stargazers)
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/re63kWKxaz)
@@ -80,8 +92,8 @@ Issues filed against any of the above are triaged from the same backlog — see 
 ## Quick Start
 
 ```bash
-git clone https://github.com/koala73/worldmonitor.git
-cd worldmonitor
+git clone https://github.com/corvusman/Freight-mon-aus.git
+cd Freight-mon-aus
 npm install
 npm run dev
 ```
