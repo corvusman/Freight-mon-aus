@@ -738,6 +738,8 @@ export interface MapLayers {
   /** Live tanker positions (AIS ship type 80-89) inside chokepoint bboxes.
    *  Refreshed every 60s via getVesselSnapshot. Energy Atlas parity-push. */
   liveTankers?: boolean;
+  /** Prototype Australian freight disruption events with explicit provenance. */
+  freightEvents?: boolean;
 }
 
 export interface AIDataCenter {

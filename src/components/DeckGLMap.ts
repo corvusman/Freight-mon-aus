@@ -136,6 +136,7 @@ import { trackGateHit } from '@/services/analytics';
 import { MapPopup, type PopupType } from './MapPopup';
 import { renderMilitaryVesselTooltipHtml } from './deckgl-tooltip-renderers';
 import type { GetChokepointStatusResponse } from '@/services/supply-chain';
+import { FREIGHT_EVENTS, type FreightEvent } from '@/config/freight';
 import type { ChinaCorridorControlTower } from '../../shared/china-corridor-control-towers';
 import {
   projectChinaCorridorOverlay,
@@ -1909,6 +1910,10 @@ export class DeckGLMap {
       layers.push(...this.createChinaCorridorSelectionLayers(this.selectedChinaCorridorOverlay));
     }
 
+    if (mapLayers.freightEvents) {
+      layers.push(this.createFreightEventsLayer());
+    }
+
     // Undersea cables layer
     if (mapLayers.cables) {
       layers.push(this.createCablesLayer());
@@ -3110,6 +3115,26 @@ export class DeckGLMap {
       },
       radiusMinPixels: 4,
       radiusMaxPixels: 10,
+      pickable: true,
+    });
+  }
+
+  private createFreightEventsLayer(): ScatterplotLayer<FreightEvent> {
+    return new ScatterplotLayer<FreightEvent>({
+      id: 'freight-events-layer',
+      data: FREIGHT_EVENTS,
+      getPosition: (event) => [event.lon, event.lat],
+      getRadius: (event) => event.severity === 'high' ? 16000 : event.severity === 'medium' ? 12000 : 9000,
+      getFillColor: (event) => event.severity === 'high'
+        ? [255, 77, 79, 220]
+        : event.severity === 'medium'
+          ? [245, 166, 35, 215]
+          : [68, 165, 255, 205],
+      getLineColor: [255, 255, 255, 210],
+      lineWidthMinPixels: 1,
+      stroked: true,
+      radiusMinPixels: 7,
+      radiusMaxPixels: 18,
       pickable: true,
     });
   }
@@ -4881,6 +4906,8 @@ export class DeckGLMap {
     const text = (value: unknown): string => escapeHtml(String(value ?? ''));
 
     switch (layerId) {
+      case 'freight-events-layer':
+        return { html: `<div class="deckgl-tooltip"><strong>${text(obj.title)}</strong><br/>${text(obj.location)} · ${text(obj.corridor)}<br/>${text(obj.summary)}<br/><strong>${text(obj.dataStatus)}</strong> · ${text(obj.source)}</div>` };
       case 'hotspots-layer':
         return { html: `<div class="deckgl-tooltip"><strong>${text(obj.name)}</strong><br/>${text(obj.subtext)}</div>` };
       case 'earthquakes-layer':

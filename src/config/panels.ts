@@ -136,6 +136,15 @@ const FULL_PANELS: Record<string, PanelConfig> = {
   'tech-hubs': { name: 'Hot Tech Hubs', enabled: false, priority: 2 },
 };
 
+// Freight Monitor MVP reuses the fork's full build slot while keeping the
+// upstream panel catalog available for later adapters and comparison.
+const FREIGHT_PANELS: Record<string, PanelConfig> = {
+  map: { name: 'Australia & Pacific Freight Map', enabled: true, priority: 1 },
+  'freight-network-status': { name: 'Australia Freight Risk', enabled: true, priority: 1 },
+  'active-exposures': { name: 'Active Exposures', enabled: true, priority: 1 },
+  'freight-risk-profile': { name: 'Freight Risk Profile', enabled: true, priority: 1 },
+};
+
 const FULL_MAP_LAYERS: MapLayers = {
   iranAttacks: IRAN_ATTACKS_ENABLED && !_desktop,
   gpsJamming: false,
@@ -1150,7 +1159,7 @@ const ENERGY_MOBILE_MAP_LAYERS: MapLayers = {
 type PanelVariant = 'full' | 'tech' | 'finance' | 'commodity' | 'energy' | 'happy';
 
 const VARIANT_PANEL_CONFIGS: Record<PanelVariant, Record<string, PanelConfig>> = {
-  full: FULL_PANELS,
+  full: FREIGHT_PANELS,
   tech: TECH_PANELS,
   finance: FINANCE_PANELS,
   commodity: COMMODITY_PANELS,
@@ -1178,6 +1187,7 @@ export const ALL_PANELS: Record<string, PanelConfig> = {
   ...TECH_PANELS,
   ...FINANCE_PANELS,
   ...FULL_PANELS,
+  ...FREIGHT_PANELS,
 };
 
 /** Per-variant canonical panel order (keys = which panels are enabled by default). */
@@ -1463,7 +1473,26 @@ export const DEFAULT_MAP_LAYERS = SITE_VARIANT === 'happy'
         ? COMMODITY_MAP_LAYERS
         : SITE_VARIANT === 'energy'
           ? ENERGY_MAP_LAYERS
-          : FULL_MAP_LAYERS;
+          : {
+            ...FULL_MAP_LAYERS,
+            conflicts: false,
+            bases: false,
+            hotspots: false,
+            nuclear: false,
+            sanctions: false,
+            economic: false,
+            outages: false,
+            military: false,
+            iranAttacks: false,
+            canadaAlerts: false,
+            ais: true,
+            tradeRoutes: true,
+            commodityPorts: true,
+            weather: true,
+            fires: true,
+            natural: true,
+            freightEvents: true,
+          };
 
 export const MOBILE_DEFAULT_MAP_LAYERS = SITE_VARIANT === 'happy'
   ? HAPPY_MOBILE_MAP_LAYERS
@@ -1475,7 +1504,21 @@ export const MOBILE_DEFAULT_MAP_LAYERS = SITE_VARIANT === 'happy'
         ? COMMODITY_MOBILE_MAP_LAYERS
         : SITE_VARIANT === 'energy'
           ? ENERGY_MOBILE_MAP_LAYERS
-          : FULL_MOBILE_MAP_LAYERS;
+          : {
+            ...FULL_MOBILE_MAP_LAYERS,
+            conflicts: false,
+            hotspots: false,
+            sanctions: false,
+            outages: false,
+            iranAttacks: false,
+            ais: true,
+            tradeRoutes: true,
+            commodityPorts: true,
+            weather: true,
+            fires: true,
+            natural: true,
+            freightEvents: true,
+          };
 
 /** Maps map-layer toggle keys to their data-freshness source IDs (single source of truth). */
 export const LAYER_TO_SOURCE: Partial<Record<keyof MapLayers, DataSourceId[]>> = {
@@ -1503,7 +1546,7 @@ export const PANEL_CATEGORY_MAP: Record<string, { labelKey: string; panelKeys: s
   // All variants — essential panels
   core: {
     labelKey: 'header.panelCatCore',
-    panelKeys: ['map', 'live-news', 'live-webcams', 'windy-webcams', 'insights', 'strategic-posture', 'latest-brief'],
+    panelKeys: ['map', 'freight-network-status', 'active-exposures', 'freight-risk-profile', 'live-news', 'live-webcams', 'windy-webcams', 'insights', 'strategic-posture', 'latest-brief'],
   },
 
   // Full (geopolitical) variant — marketsFinance/topical/dataTracking are
